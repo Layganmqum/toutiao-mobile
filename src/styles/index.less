@@ -2,3 +2,23 @@
 
 // *引入 icon 样式
 @import "./icon.less";
+
+body {
+  background-color: #f5f7f9;
+}
+
+// *设置全局导航栏样式
+.app-nav-bar {
+  background-color: #3296fa;
+  .van-nav-bar__title {
+    color: #ffffff;
+  }
+  .van-icon {
+    color: #ffffff;
+  }
+}
+// ! 为了解决 toast 文字模糊
+.van-toast--top{
+  top: 11%;
+  line-height: 18.4px;
+}

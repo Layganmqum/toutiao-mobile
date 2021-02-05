@@ -11,12 +11,12 @@ const routes = [
     // 路由懒加载
     component: () => import('@/views/login/')
   },
-  {
+  { // *一级路由渲染到根组件中的 route-view
     path: '/',
     component: () => import('@/views/layout/'),
     children: [
-      {
-        path: '', // 默认子路由
+      { // *子级路由渲染到父组件中的 route-view 中
+        path: '', // ? 默认子路由
         name: 'Home',
         component: () => import('@/views/home/')
       },

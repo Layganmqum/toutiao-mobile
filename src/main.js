@@ -3,14 +3,14 @@ import App from './App.vue'
 import router from './router'
 import store from './store'
 
-// 加载全局样式
-import '@/styles/index.less'
-
 // 注册 Vant 组件库
 import Vant from 'vant'
 
 // 加载 Vant 组件库样式
 import 'vant/lib/index.css'
+
+// 加载全局样式(放在后面可以覆盖引入的 UI 样式)
+import '@/styles/index.less'
 
 // 使用 lib-flexible 动态设置 REM 基准值(html 标签的字体大小)
 import 'amfe-flexible'
