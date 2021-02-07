@@ -1,5 +1,8 @@
 /**
  * 本地存储封装模块
+ *  - 目的是为了方便管理
+ *  - 提高开发效率，增强可维护性
+ *  - 提高重用性
  */
 export const getItem = name => {
   const data = window.localStorage.getItem(name)

@@ -125,10 +125,6 @@ export default {
         loadingType: 'spinner', // 加载图标类型
         duration: 0 // 展示时长(ms)，值为 0 时，toast 不会消失
       })
-      // *1. 找到数据接口
-      // *2. 封装请求方法
-      // *3. 请求调用登录
-      // *4. 处理响应结果
       // ? async + await 异步调用终极方法
       // const res = await Login(this.user)
       // console.log(res)
@@ -140,12 +136,19 @@ export default {
       // }).finally(() => {
       //   console.log('111')
       // })
+      // *1. 找到数据接口
+      // *2. 封装请求方法
+      // *3. 请求调用登录
+      // *4. 处理响应结果
       // ! 项目练手主要运用 async + await (需要用 try + catch 处理)
       try {
         const { data } = await Login(this.user) // ?结构 response 里面的 data 对象
+        // *处理响应结果
         this.$toast.success('登录成功')
-        console.log(data)
+        // *将后端返回的用户的登录状态(token 等数据)放到 Vuex 容器中
         this.$store.commit('setUser', data.data)
+        // *登录成功，跳转回原来页面
+        this.$router.back() // ! 这方式有问题，暂时用这种方式
       } catch (err) {
         this.$toast.fail('登录失败\n手机号/验证码输入错误')
         console.log(err)
