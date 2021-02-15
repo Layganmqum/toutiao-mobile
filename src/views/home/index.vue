@@ -17,7 +17,7 @@
     <!--
       标签页组件有一个功能，只有第1次查看标签页的时候才会渲染里面的内容
      -->
-    <van-tabs v-model="active">
+    <van-tabs class="channel-tabs" v-model="active">
       <van-tab
         v-for="(channel, index) in channels"
         :key="index"
@@ -78,5 +78,16 @@ export default {
     border: none;
   }
 }
-
+.channel-tabs {
+  /deep/ .van-tab {
+    border-right: 1px solid #edeff3;
+    border-bottom: 1px solid #edeff3;
+  }
+  /deep/ .van-tabs__line {
+    width: 15px !important;
+    height: 3px;
+    background-color: #3296fa;
+    margin-bottom: 5px;
+  }
+}
 </style>
