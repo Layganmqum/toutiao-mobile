@@ -49,8 +49,14 @@
       position="bottom"
       class="channel-edit-popup"
     >
+    <!--
+      //!模板中的 $event 表示事件参数,传递的参数是 1，$event = 1
+    -->
     <channel-edit
       :userChannels="channels"
+      :active="active"
+      @close="isChannelEditShow = false"
+      @update-active="active = $event"
     />
     </van-popup>
     <!-- /底部弹出层 -->
@@ -61,6 +67,8 @@
 import { GetUserChannels } from '@/api/user'
 import ArticleList from './components/article-list'
 import ChannelEdit from './components/channel-edit'
+import { mapState } from 'vuex'
+import { getItem } from '@/utils/storage'
 export default {
   name: 'HomeIndex',
   components: {
@@ -78,17 +86,41 @@ export default {
       isChannelEditShow: true
     }
   },
-  computed: {},
+  computed: {
+    ...mapState(['user'])
+  },
   created () {
     this.loadChannels()
   },
   mounted () {},
   watch: {},
   methods: {
+    // *请求获取频道数据
     async loadChannels () {
-      const { data } = await GetUserChannels()
-      console.log(data)
-      this.channels = data.data.channels
+      let channels = []
+      // const { data } = await GetUserChannels()
+      // this.channels = data.data.channels
+      // *要正确的获取频道列表数据就需要判断 用户是否登录/本地存储是否有数据 否则就加载推荐的频道
+      if (this.user) {
+        // ?用户登录状态：请求获取用户的线上频道列表数据
+        const { data } = await GetUserChannels()
+        channels = data.data.channels
+      } else {
+        // ?用户未登录状态：判断是否有本地存储的频道列表数据
+        const localChannels = getItem('user-channels')
+        if (localChannels) { // 如果有本地存储的频道列表则使用
+          channels = localChannels
+        } else { // 如果没有本地存储列表，则使用推荐的列表
+          const { data } = await GetUserChannels()
+          channels = data.data.channels
+        }
+        // *把处理好的数据放到 data 中以供模板使用
+        this.channels = channels
+      }
+    },
+    // *子组件传值切换频道
+    onUpdateActive (index) {
+      this.active = index
     }
   }
 }
