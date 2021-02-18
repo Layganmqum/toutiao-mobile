@@ -10,8 +10,7 @@ export const getItem = name => {
   // *因为 data 可能不是 JSON格式字符串
   try {
     // *尝试把 data 转为对象形式
-    JSON.parse(data)
-    return data
+    return JSON.parse(data)
   } catch {
     // *data 不是 JSON 格式字符串,直接原样返回
     return data

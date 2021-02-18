@@ -32,7 +32,10 @@
     <!-- /联想建议 -->
 
     <!-- 历史记录 -->
-    <search-history v-else/>
+    <search-history
+      v-else
+      :search-histories="searchHistories"
+    />
     <!-- /历史记录 -->
   </div>
 </template>
@@ -41,6 +44,9 @@
 import SearchSuggestion from './components/search-suggestion'
 import SearchHistory from './components/search-history'
 import SearchResult from './components/search-result'
+import { setItem, getItem } from '@/utils/storage'
+import { GetSearchHistories } from '@/api/search'
+import { mapState } from 'vuex'
 export default {
   name: 'SearchIndex',
   components: {
@@ -54,20 +60,61 @@ export default {
       // *搜索框输入的内容
       searchText: '',
       // *控制搜索结果显示
-      isResultShow: false
+      isResultShow: false,
+      // *搜索历史记录
+      searchHistories: []
     }
   },
-  computed: {},
-  created () {},
+  computed: {
+    ...mapState(['user'])
+  },
+  created () {
+    this.loadSearchHistories()
+  },
   mounted () {},
   watch: {},
   methods: {
-    // 搜索栏-确认监听
+    // *搜索栏-确认监听
     onSearch (searchText) {
       // 让输入框文字设置为要搜索的文本
       this.searchText = searchText
+
+      // 操作历史记录，判断是否有重复项
+      const index = this.searchHistories.indexOf(searchText)
+      if (index !== -1) {
+        // 把重复项删除
+        this.searchHistories.splice(index, 1)
+      }
+
+      // 把最新的搜索历史记录放到顶部
+      this.searchHistories.unshift(searchText)
+
+      // ?如果用户已登录，则把搜索历史记录存储到线上
+      //    * 提示：只要我们调用获取搜索结果的数据接口，后端会给我们自动存储用户的搜索历史记录
+      // ?如果用户没有登录，则把搜索历史记录存储到本地
+      setItem('search-histories', this.searchHistories)
+
       // 展示搜索结果
       this.isResultShow = true
+    },
+    // *搜索历史
+    async loadSearchHistories () {
+      // 因为后端帮我们存储的用户搜索历史记录太少了(4条)
+      // 所以需要让后端返回的历史记录和本地的历史记录合并到一起
+
+      // *获取本地历史记录
+      let searchHistories = getItem('search-histories') || []
+      // ?判断用户是否登录
+      if (this.user) {
+        const { data } = await GetSearchHistories()
+        // !想要线上+本地合并，就要考虑数组去重的问题
+        // TODO:这里是用 Set函数来解决数组去重的问题
+        // * 步骤1-合并数组：[...Array1, ...Array2]
+        // * 步骤2-把 Set 转为数组：[...Set对象]
+        // ? 数组去重就是将 步骤1+步骤2 整合一起
+        searchHistories = [...new Set([...searchHistories, ...data.data.keywords])]
+      }
+      this.searchHistories = searchHistories
     }
   }
 }
