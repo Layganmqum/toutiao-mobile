@@ -4,8 +4,9 @@
       v-for="(suggestion, index) in suggestions"
       :key="index"
       icon="search"
-      :title="suggestion"
+      @click="$emit('search', suggestion)"
     >
+      <div slot="title" v-html="highlight(suggestion)"></div>
     </van-cell>
   </div>
 </template>
@@ -56,8 +57,8 @@ export default {
       //   const { data } = await GetSearchSuggestions(this.searchText)
       //   this.suggestions = data.data.options
       // },
-      // ! 对 handler 函数做防抖处理
-      handler: debounce(async () => {
+      // ! 对 handler 函数做防抖处理,要用原始完整命名函数
+      handler: debounce(async function () {
         const { data } = await GetSearchSuggestions(this.searchText)
         this.suggestions = data.data.options
       }, 200),
@@ -65,7 +66,17 @@ export default {
       immediate: true
     }
   },
-  methods: {}
+  methods: {
+    // *高亮搜索文字
+    highlight (suggestion) {
+      // *RegExp 是正则表达式的构造函数
+      //  - 参数1：字符串
+      //  - 参数2：匹配模式
+      //  - 返回值：正则对象
+      return suggestion.replace(new RegExp(this.searchText, 'gi'),
+       `<span style="color: red">${this.searchText}</span>`)
+    }
+  }
 }
 </script>
 

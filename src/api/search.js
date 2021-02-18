@@ -13,3 +13,12 @@ export const GetSearchSuggestions = q => {
     }
   })
 }
+
+// ? 获取搜索结果
+export const GetSearchResult = params => {
+  return request({
+    method: 'GET',
+    url: '/app/v1_0/search',
+    params
+  })
+}
