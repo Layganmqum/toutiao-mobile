@@ -9,6 +9,7 @@
         type="info"
         round
         size="small"
+        to="/search"
       >搜索</van-button>
     </van-nav-bar>
     <!-- /导航栏 -->
@@ -83,7 +84,7 @@ export default {
       // *频道列表
       channels: [],
       // *控制编辑频道的编辑状态
-      isChannelEditShow: true
+      isChannelEditShow: false
     }
   },
   computed: {

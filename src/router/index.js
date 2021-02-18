@@ -36,6 +36,12 @@ const routes = [
         component: () => import('@/views/my/')
       }
     ]
+  },
+  {
+    path: '/search',
+    name: 'Search',
+    // 路由懒加载
+    component: () => import('@/views/search/')
   }
 ]
 
