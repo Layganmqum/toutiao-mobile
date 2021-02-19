@@ -8,39 +8,47 @@
       @click-left="$router.back()"
     />
     <!-- /导航栏 -->
-    <!-- 标题 -->
-    <h1 class="title">{{ article.title }}</h1>
-    <!-- /标题 -->
-    <!-- 作者栏 -->
-    <van-cell center class="user-info">
-      <van-image
-        class="avatar"
-        slot="icon"
-        fit="cover"
-        round
-        :src="article.aut_photo"
-      />
-      <div slot="title" class="name" >{{ article.aut_name }}</div>
-      <div slot="label" class="pubdate" >{{ article.pubdate | relativeTime }}</div>
-      <van-button
-        class="follow-btn"
-        :type="article.is_followed ? 'danger' : 'info'"
-        round
-        :icon="article.is_followed ? 'star' : 'plus'"
-        size="small"
-        :loading="isFollowLoading"
-        @click="onFollow"
-      >{{ article.is_followed ? '已关注' : '关注'}}</van-button>
-    </van-cell>
-    <!-- /作者栏 -->
-    <!-- 正文内容 -->
-    <div
-      v-html="article.content"
-      class="content markdown-body"
-      ref="article-content"
-    >
+
+    <div class="article-wrap">
+      <!-- 标题 -->
+      <h1 class="title">{{ article.title }}</h1>
+      <!-- /标题 -->
+      <!-- 作者栏 -->
+      <van-cell center class="user-info">
+        <van-image
+          class="avatar"
+          slot="icon"
+          fit="cover"
+          round
+          :src="article.aut_photo"
+        />
+        <div slot="title" class="name" >{{ article.aut_name }}</div>
+        <div slot="label" class="pubdate" >{{ article.pubdate | relativeTime }}</div>
+        <van-button
+          class="follow-btn"
+          :type="article.is_followed ? 'danger' : 'info'"
+          round
+          :icon="article.is_followed ? 'star' : 'plus'"
+          size="small"
+          :loading="isFollowLoading"
+          @click="onFollow"
+        >{{ article.is_followed ? '已关注' : '关注'}}</van-button>
+      </van-cell>
+      <!-- /作者栏 -->
+      <!-- 正文内容 -->
+      <div
+        v-html="article.content"
+        class="content markdown-body"
+        ref="article-content"
+      >
+      </div>
+      <!-- /正文内容 -->
+
+      <!-- 文章评论列表 -->
+      <comment-list :source="articleId"/>
+      <!-- /文章评论列表 -->
     </div>
-    <!-- /正文内容 -->
+
     <!-- 底部区域 -->
     <div class="article-bottom">
       <van-button
@@ -84,10 +92,13 @@ import {
 } from '@/api/article'
 import { AddFollow, DeleteFollow } from '@/api/user'
 import { ImagePreview } from 'vant'
+import CommentList from './components/comment-list'
 
 export default {
   name: 'ArticleIndex',
-  components: {},
+  components: {
+    CommentList
+  },
   // ! 在组件中获取动态路由参数：
   // * 方式一：this.$route.params.xxx
   // * 方式二：props 传参 (推荐!)
@@ -244,6 +255,14 @@ ul {
 .markdown-body {
   padding: 14px;
   background-color: #fff;
+}
+.article-wrap {
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: 46px;
+  bottom: 50px;
+  overflow-y: auto;
 }
 .article-bottom {
   background-color: #fff;
