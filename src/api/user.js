@@ -28,7 +28,14 @@ import request from '@/utils/request.js'
 // export const Login = params => request.post('/app/v1_0/authorizations', params)
 
 // ? 登录/注册 请求
-export const Login = params => request.post('/app/v1_0/authorizations', params)
+// export const Login = params => request.post('/app/v1_0/authorizations', params)
+export const Login = data => {
+  return request({
+    method: 'POST',
+    url: '/app/v1_0/authorizations',
+    data
+  })
+}
 
 // ? 发送短信验证码
 export const SendSms = params => request.get(`/app/v1_0/sms/codes/${params}`)
@@ -45,7 +52,38 @@ export const SendSms = params => request.get(`/app/v1_0/sms/codes/${params}`)
 //   })
 // }
 // * 方法二：在请求拦截器中加入请求头，这里就直接以正常的形式请求
-export const GetCurrentUser = () => request.get('app/v1_0/user')
+// export const GetCurrentUser = () => request.get('app/v1_0/user')
+export const GetCurrentUser = () => {
+  return request({
+    method: 'GET',
+    url: 'app/v1_0/user'
+  })
+}
 
 // ? 获取用户频道列表
-export const GetUserChannels = () => request.get('app/v1_0/user/channels')
+// export const GetUserChannels = () => request.get('app/v1_0/user/channels')
+export const GetUserChannels = () => {
+  return request({
+    method: 'GET',
+    url: 'app/v1_0/user/channels'
+  })
+}
+
+// ? 关注用户
+export const AddFollow = userId => {
+  return request({
+    method: 'POST',
+    url: 'app/v1_0/user/followings',
+    data: {
+      target: userId
+    }
+  })
+}
+
+// ? 取消关注用户
+export const DeleteFollow = userId => {
+  return request({
+    method: 'DELETE',
+    url: `app/v1_0/user/followings/${userId}`
+  })
+}

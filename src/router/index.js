@@ -48,7 +48,8 @@ const routes = [
     name: 'Article',
     // 路由懒加载
     component: () => import('@/views/article/'),
-    // *将动态路由参数映射到组件的 props 中，无论是访问还是维护性都很方便
+    // *将动态路由参数(:articleId)映射到组件的 props 中，无论是访问还是维护性都很方便
+    // ?参考：Vue Router 路由组件传参
     props: true
   }
 ]
