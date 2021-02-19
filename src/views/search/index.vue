@@ -32,9 +32,12 @@
     <!-- /联想建议 -->
 
     <!-- 历史记录 -->
+    <!-- 子组件带参数执行函数，监听时可用不用写参数名 -->
     <search-history
       v-else
       :search-histories="searchHistories"
+      @search="onSearch"
+      @update-histories="searchHistories = $event"
     />
     <!-- /历史记录 -->
   </div>
@@ -72,7 +75,13 @@ export default {
     this.loadSearchHistories()
   },
   mounted () {},
-  watch: {},
+  watch: {
+    // !监视搜索历史记录的变化，当发生变化就存储到本地
+    // *这里相当于全局变更，即可省略其他地方的变化修改
+    searchHistories () {
+      setItem('search-histories', this.searchHistories)
+    }
+  },
   methods: {
     // *搜索栏-确认监听
     onSearch (searchText) {
@@ -92,7 +101,7 @@ export default {
       // ?如果用户已登录，则把搜索历史记录存储到线上
       //    * 提示：只要我们调用获取搜索结果的数据接口，后端会给我们自动存储用户的搜索历史记录
       // ?如果用户没有登录，则把搜索历史记录存储到本地
-      setItem('search-histories', this.searchHistories)
+      // setItem('search-histories', this.searchHistories)
 
       // 展示搜索结果
       this.isResultShow = true
