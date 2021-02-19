@@ -1,6 +1,15 @@
 <template>
   <!-- <div class="article-item">文章列表项</div> -->
-  <van-cell class="article-item">
+  <!-- to里面的 name：路由设置的 name，parmas：想要传递的参数 -->
+  <van-cell
+    class="article-item"
+    :to="{
+      name: 'Article',
+      params: {
+        articleId: article.art_id
+      }
+    }"
+  >
     <div class="title" slot="title">{{ article.title }}</div>
     <div slot="label">
       <div
