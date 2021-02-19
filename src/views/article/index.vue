@@ -9,7 +9,7 @@
     />
     <!-- /导航栏 -->
     <!-- 标题 -->
-    <h1 class="title">世界上最伟大的推销员</h1>
+    <h1 class="title">{{ article.title }}</h1>
     <!-- /标题 -->
     <!-- 作者栏 -->
     <van-cell center class="user-info">
@@ -18,23 +18,21 @@
         slot="icon"
         fit="cover"
         round
-        src="https://img01.yzcdn.cn/vant/cat.jpeg"
+        :src="article.aut_photo"
       />
-      <div slot="title" class="name" >奥格·曼狄诺</div>
-      <div slot="label" class="pubdate" >14小时前</div>
+      <div slot="title" class="name" >{{ article.aut_name }}</div>
+      <div slot="label" class="pubdate" >{{ article.pubdate | relativeTime }}</div>
       <van-button
         class="follow-btn"
-        type="info"
+        :type="article.is_followed ? 'danger' : 'info'"
         round
-        icon="plus"
+        :icon="article.is_followed ? 'star' : 'plus'"
         size="small"
-      >关注</van-button>
+      >{{ article.is_followed ? '已关注' : '关注'}}</van-button>
     </van-cell>
     <!-- /作者栏 -->
     <!-- 正文内容 -->
-    <div class="content markdown-body">
-      <p>hello</p>
-      <p>hello</p>
+    <div v-html="article.content" class="content markdown-body">
     </div>
     <!-- /正文内容 -->
   </div>
@@ -56,7 +54,10 @@ export default {
     }
   },
   data () {
-    return {}
+    return {
+      // *文章数据对象
+      article: {}
+    }
   },
   computed: {},
   created () {
@@ -68,7 +69,7 @@ export default {
     async loadArticle () {
       // !这里传入的 ID 太长了，不符合JS安全传参标准，故会导致 404 报错
       const { data } = await GetArticleById(this.articleId)
-      console.log(data)
+      this.article = data.data
     }
   }
 }
