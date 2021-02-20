@@ -13,6 +13,7 @@
       <!-- 标题 -->
       <h1 class="title">{{ article.title }}</h1>
       <!-- /标题 -->
+
       <!-- 作者栏 -->
       <van-cell center class="user-info">
         <van-image
@@ -35,6 +36,7 @@
         >{{ article.is_followed ? '已关注' : '关注'}}</van-button>
       </van-cell>
       <!-- /作者栏 -->
+
       <!-- 正文内容 -->
       <div
         v-html="article.content"
@@ -48,6 +50,8 @@
       <comment-list
         :source="articleId"
         :list="commentList"
+        @update-total-count="totalCommentCount = $event"
+        @reply-click="onReplyClick"
       />
       <!-- /文章评论列表 -->
     </div>
@@ -63,7 +67,7 @@
       >写评论</van-button>
       <van-icon
         name="comment-o"
-        info="123"
+        :info="totalCommentCount"
         color="#777"
       ></van-icon>
       <van-icon
@@ -94,6 +98,23 @@
       />
     </van-popup>
     <!-- /发布评论 -->
+
+    <!-- 评论回复 -->
+    <van-popup
+      :style="{ height: '70%' }"
+      v-model="isReplyShow"
+      position="bottom"
+    >
+      <!-- 这里使用 v-if 的目的是为了让组件随着弹出层的显示进行渲染和销毁
+      防止加载过的组件不重新渲染导致数据不会重新加载的问题 -->
+      <comment-reply
+        v-if="isReplyShow"
+        :comment="replyComment"
+        :articleId="articleId"
+        @close="isReplyShow = false"
+      />
+    </van-popup>
+    <!-- /评论回复 -->
   </div>
 </template>
 
@@ -110,12 +131,14 @@ import { AddFollow, DeleteFollow } from '@/api/user'
 import { ImagePreview } from 'vant'
 import CommentList from './components/comment-list'
 import PostComment from './components/post-comment'
+import CommentReply from './components/comment-reply'
 
 export default {
   name: 'ArticleIndex',
   components: {
     CommentList,
-    PostComment
+    PostComment,
+    CommentReply
   },
   // ! 在组件中获取动态路由参数：
   // * 方式一：this.$route.params.xxx
@@ -137,7 +160,13 @@ export default {
       // *控制发布评论的显示状态
       isPostShow: false,
       // *文章评论列表
-      commentList: []
+      commentList: [],
+      // *评论总数量
+      totalCommentCount: 0,
+      // *控制回复的显示状态
+      isReplyShow: false,
+      // *当前回复评论对象
+      replyComment: {}
     }
   },
   computed: {},
@@ -233,11 +262,21 @@ export default {
       // 更新按钮视图
       this.$toast.success(`${this.article.attitude === 1 ? '' : '取消'}点赞成功`)
     },
-    onPostSuccess (comment) {
+    onPostSuccess (comment) { // 发布成功函数
       // 把发布成功的评论数据对象放到评论列表顶部
       this.commentList.unshift(comment)
+
+      // 更新评论的总数量
+      this.totalCommentCount++
+
       // 关闭发布评论弹出层
       this.isPostShow = false
+    },
+    onReplyClick (comment) { // 点击评论中回复按钮函数
+      // 将返回的 comment 存到 replyComment 中
+      this.replyComment = comment
+      // 展示回复内容
+      this.isReplyShow = true
     }
   }
 }
@@ -298,13 +337,19 @@ ul {
   font-size: 24px;
   display: flex;
   align-items: center;
-  justify-content: space-evenly;
+  justify-content: space-around;
+  box-sizing: border-box;
   position: fixed;
   bottom: 0;
   left: 0;
   right: 0;
   .comment-btn {
     width: 150px;
+    height: 30px;
+    border: 1px solid #eeeeee;
+    font-size: 15px;
+    line-height: 23px;
+    color: #a7a7a7;
   }
 }
 </style>

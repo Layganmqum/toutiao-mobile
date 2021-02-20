@@ -11,6 +11,7 @@
         v-for="(comment, index) in list"
         :key="index"
         :comment="comment"
+        @reply-click="$emit('reply-click', $event)"
       />
       <!-- <van-cell
         v-for="(comment, index) in list"
@@ -30,9 +31,17 @@ export default {
     CommentItem
   },
   props: {
+    // 如果获取文章评论，则传递文章id
+    // 如果获取回复评论，则传递评论id
     source: {
       type: [Number, String, Object],
       required: true
+    },
+    // 获取文章评论，使用字符 a
+    // 获取文章评论，使用字符 c
+    type: {
+      type: String,
+      default: 'a'
     },
     list: {
       type: Array,
@@ -60,12 +69,13 @@ export default {
     async onLoad () {
       // 1. 请求获取数据
       const { data } = await GetComments({
-        type: 'a', // 评论类型，a-对文章(article)的评论，c-对评论的回复
-        source: this.source, // 源id，文章id或评论id
+        type: this.type, // 评论类型，a-对文章(article)的评论，c-对评论的回复
+        source: this.source.toString(), // 源id，文章id或评论id
         offset: this.offset, // 获取评论数据的偏移量，值为评论id，表示从此id的数据向后取，不传表示从第一页开始读取数据
         limit: this.limit // 设置每页大小
       })
-      console.log(data)
+
+      this.$emit('update-total-count', data.data.total_count)
 
       // 2. 把数据放到列表中
       const { results } = data.data
