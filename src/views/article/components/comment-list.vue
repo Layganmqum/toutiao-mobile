@@ -1,34 +1,51 @@
 <template>
   <div class="comment-list">
+    <van-cell style="font-size: 14px" title="全部评论："></van-cell>
     <van-list
       v-model="loading"
       :finished="finished"
       finished-text="没有更多了"
       @load="onLoad"
     >
-      <van-cell
+      <comment-item
+        v-for="(comment, index) in list"
+        :key="index"
+        :comment="comment"
+      />
+      <!-- <van-cell
         v-for="(comment, index) in list"
         :key="index"
         :title="comment.content"
-      />
+      /> -->
     </van-list>
   </div>
 </template>
 
 <script>
 import { GetComments } from '@/api/comment'
+import CommentItem from './comment-item'
 export default {
   name: 'CommentList',
-  components: {},
+  components: {
+    CommentItem
+  },
   props: {
     source: {
       type: [Number, String, Object],
       required: true
+    },
+    list: {
+      type: Array,
+      // 数组或对象的默认值必须通过函数返回
+      default: () => []
+      // default: function () {
+      //   return []
+      // }
     }
   },
   data () {
     return {
-      list: [],
+      // list: [],
       loading: false,
       finished: false,
       offset: null, // 获取下一页数据的页码
