@@ -21,6 +21,7 @@
           class="update-btn"
           size="small"
           round
+          to="/user/profile"
         >编辑资料</van-button>
       </van-cell>
       <!-- 用户文章信息(头条+关注+粉丝+获赞) -->
