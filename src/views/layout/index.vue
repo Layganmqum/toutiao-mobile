@@ -1,7 +1,9 @@
 <template>
   <div class="layout-container">
     <!-- 子路由出口 -->
-    <router-view />
+    <keep-alive>
+      <router-view />
+    </keep-alive>
     <!-- /子路由出口 -->
 
     <!-- 底部导航栏 route：开启路由模式 -->
@@ -28,7 +30,10 @@ export default {
   },
   computed: {},
   created () {},
-  mounted () {},
+  mounted () {
+    // *重新添加缓存
+    this.$store.commit('addCachePage', 'LayoutIndex')
+  },
   watch: {},
   methods: {}
 }

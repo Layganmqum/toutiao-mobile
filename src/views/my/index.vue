@@ -52,8 +52,14 @@
         </van-grid-item>
       </van-grid>
     </van-cell-group>
+
     <div v-else class="not-login">
-      <div @click="$router.push('/login')">
+      <div @click="$router.push({
+        name: 'Login',
+        query: {
+          redirect: '/my'
+        }
+      })">
         <van-image
           class="mobile"
           width="66"

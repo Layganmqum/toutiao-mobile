@@ -89,7 +89,7 @@ export default {
       // *用户登录数据
       user: {
         // *手机号
-        mobile: '13911111111',
+        mobile: '13922222222',
         // *验证码
         code: '246810'
       },
@@ -147,8 +147,13 @@ export default {
         this.$toast.success('登录成功')
         // *将后端返回的用户的登录状态(token 等数据)放到 Vuex 容器中
         this.$store.commit('setUser', data.data)
+
+        // 清除 layoutIndex 缓存,让它重新渲染
+        this.$store.commit('removeCachePage', 'LayoutIndex')
+
         // *登录成功，跳转回原来页面
-        this.$router.back() // ! 这方式有问题，暂时用这种方式
+        // this.$router.back() // ! 这方式有问题，暂时用这种方式
+        this.$router.push(this.$route.query.redirect || '/')
       } catch (err) {
         this.$toast.fail('登录失败\n手机号/验证码输入错误')
         console.log(err)

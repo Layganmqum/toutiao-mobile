@@ -1,5 +1,5 @@
 <template>
-  <div class="article-list">
+  <div class="article-list" ref="article-list">
     <van-pull-refresh
       v-model="isRefreshLoading"
       @refresh="onRefresh"
@@ -30,6 +30,7 @@
 <script>
 import ArticleItem from '@/components/article-Item/index'
 import { GetArticles } from '@/api/article'
+import { debounce } from 'lodash'
 export default {
   name: 'ArticleList',
   components: {
@@ -55,12 +56,19 @@ export default {
       // *下拉刷新的 loading 状态
       isRefreshLoading: false,
       // *下拉刷新的更新成功文本
-      refreshSuccessText: null
+      refreshSuccessText: null,
+      // *记录列表当前scroll与顶部的距离
+      scrollTop: 0
     }
   },
   computed: {},
   created () {},
-  mounted () {},
+  mounted () {
+    const articleList = this.$refs['article-list']
+    articleList.onscroll = debounce(() => {
+      this.scrollTop = articleList.scrollTop
+    }, 50)
+  },
   watch: {},
   methods: {
     async onLoad () { // 加载文章列表数据
@@ -107,7 +115,16 @@ export default {
       this.refreshSuccessText = `更新了 ${results.length} 条数据` // 成功提示
       this.isRefreshLoading = false
     }
+  },
+  // 当拥有 keep-alive 是会拥有这两个钩子函数
+  activated () {
+    // console.log('从缓存中被激活')
+    // 把记录的到顶部的距离重新设置回去
+    this.$refs['article-list'].scrollTop = this.scrollTop
   }
+  // deactivated () {
+  //   console.log('组件失去活动')
+  // }
 }
 </script>
 

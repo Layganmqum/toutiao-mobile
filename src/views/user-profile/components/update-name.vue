@@ -47,9 +47,9 @@ export default {
   mounted () {},
   watch: {
     // * 这里进行 props 监听，解决由于渲染完成仍未加载 name 导致的 localName = undefined
-    name: function (newVal, oldVal) {
-      this.localName = this.name
-    }
+    // name: function (newVal, oldVal) {
+    //   this.localName = this.name
+    // }
   },
   methods: {
     async onConfirm () { // 确认昵称修改事件函数
